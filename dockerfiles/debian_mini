@@ -7,16 +7,16 @@ RUN echo "deb [trusted=yes] http://archive.debian.org/debian buster main contrib
 	echo "deb [trusted=yes] http://archive.debian.org/debian-security buster/updates main" \
 	>> /etc/apt/sources.list
 
-# Bỏ qua kiểm tra hạn sử dụng (Valid-Until) của kho lưu trữ cũ và bỏ lệnh upgrade
+# Bỏ qua kiểm tra hạn sử dụng và cập nhật danh sách gói
 RUN apt-get clean && apt-get -o Acquire::Check-Valid-Until=false update
 
-# Cài đặt các gói cần thiết (giữ nguyên netcat-openbsd)
+# Đã xóa 'base' và 'netcat-traditional' để tránh lỗi
 RUN apt-get -y install apt-utils gcc \
 	python3 vim unzip ruby nodejs \
-	fakeroot dbus base whiptail hexedit \
+	fakeroot dbus whiptail hexedit \
 	patch wamerican ucf manpages \
 	file luajit make lua5.3 dialog curl \
-	less cowsay netcat-openbsd
+	less cowsay
 
 RUN useradd -m user && echo "user:password" | chpasswd
 COPY --chown=user:user ./examples /home/user/examples
